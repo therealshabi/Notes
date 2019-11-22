@@ -16,6 +16,8 @@ class NotesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
+        Timber.plant(Timber.DebugTree())
+
         notesViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
         setupNotesRecyclerView()
     }
