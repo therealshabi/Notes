@@ -11,11 +11,12 @@ import kotlinx.android.synthetic.main.notes_item.view.*
 class NotesRecyclerAdapter : RecyclerView.Adapter<NotesRecyclerAdapter.NotesViewHolder>() {
     private val notesList: ArrayList<Note> = ArrayList()
 
-    private fun addNotes(notesList: ArrayList<Note>) {
-        notesList.apply {
+    fun addNotes(notesList: List<Note>) {
+        this.notesList.apply {
             clear()
             addAll(notesList)
         }
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
