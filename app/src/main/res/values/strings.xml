@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Notes</string>
     <string name="search_text_view_hint">Search</string>
+
+    <string name="add_title_hint">Add Title</string>
+    <string name="add_content_hint">Your content here</string>
 </resources>
