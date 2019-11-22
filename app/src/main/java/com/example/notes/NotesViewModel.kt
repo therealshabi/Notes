@@ -38,10 +38,10 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
             private val noteList: MutableLiveData<List<Note>>
         ) : AsyncTask<String, Int, List<Note>?>() {
             override fun doInBackground(vararg query: String): List<Note>? {
-                return if (query.isEmpty()) {
+                return if (query[0].isEmpty()) {
                     notesDao?.getAllNotes()
                 } else {
-                    notesDao?.getNotes(query[0])
+                    notesDao?.getNotes("%${query[0]}%")
                 }
             }
 
