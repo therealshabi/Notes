@@ -1,6 +1,5 @@
 package com.example.notes.data
 
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -16,8 +15,8 @@ interface NotesDao {
     fun deleteAll()
 
     @Query("Select * from notes where title LIKE :query OR content LIKE :query ORDER BY timeStamp DESC")
-    fun getNotes(query: String): MutableLiveData<List<Note>>
+    fun getNotes(query: String): List<Note>
 
     @Query("Select * from notes ORDER BY timeStamp DESC")
-    fun getAllNotes(): MutableLiveData<List<Note>>
+    fun getAllNotes(): List<Note>
 }
