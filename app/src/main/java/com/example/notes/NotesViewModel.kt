@@ -2,6 +2,7 @@ package com.example.notes
 
 import android.app.Application
 import android.os.AsyncTask
+import android.util.LruCache
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.notes.data.NotesDao
@@ -13,6 +14,7 @@ import java.util.*
 class NotesViewModel(application: Application) : AndroidViewModel(application) {
     private val notesDao: NotesDao?
     var noteList: MutableLiveData<List<Note>> = MutableLiveData()
+    private val searchCache: LruCache<String, List<Note>> = LruCache(100)
 
     init {
         val database = NotesDatabase.getDatabase(application)
@@ -21,7 +23,11 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getNotes(query: String = "") {
-        NotesAsyncTask(notesDao, noteList).execute(query)
+        if (query.isNotEmpty() && searchCache[query] != null) {
+            noteList.postValue(searchCache[query])
+            return
+        }
+        NotesAsyncTask(notesDao, noteList, searchCache).execute(query)
     }
 
     fun addNote(title: String, content: String) {
@@ -35,18 +41,23 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         class NotesAsyncTask(
             private val notesDao: NotesDao?,
-            private val noteList: MutableLiveData<List<Note>>
-        ) : AsyncTask<String, Int, List<Note>?>() {
-            override fun doInBackground(vararg query: String): List<Note>? {
+            private val noteList: MutableLiveData<List<Note>>,
+            private val searchCache: LruCache<String, List<Note>>
+        ) : AsyncTask<String, Int, Pair<String, List<Note>?>>() {
+
+            override fun doInBackground(vararg query: String): Pair<String, List<Note>?> {
                 return if (query[0].isEmpty()) {
-                    notesDao?.getAllNotes()
+                    Pair(query[0], notesDao?.getAllNotes())
                 } else {
-                    notesDao?.getNotes("%${query[0]}%")
+                    Pair(query[0], notesDao?.getNotes("%${query[0]}%"))
                 }
             }
 
-            override fun onPostExecute(result: List<Note>?) {
-                noteList.value = result
+            override fun onPostExecute(result: Pair<String, List<Note>?>) {
+                noteList.value = result.second
+                if (result.first.isNotEmpty()) {
+                    searchCache.put(result.first, result.second)
+                }
             }
         }
     }
