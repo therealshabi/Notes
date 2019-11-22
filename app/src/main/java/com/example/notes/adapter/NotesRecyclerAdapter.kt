@@ -3,6 +3,7 @@ package com.example.notes.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notes.R
 import com.example.notes.model.Note
@@ -12,11 +13,14 @@ class NotesRecyclerAdapter : RecyclerView.Adapter<NotesRecyclerAdapter.NotesView
     private val notesList: ArrayList<Note> = ArrayList()
 
     fun addNotes(notesList: List<Note>) {
+        val diffResult = DiffUtil.calculateDiff(
+            NotesDiffCallback(this.notesList, ArrayList(notesList))
+        )
         this.notesList.apply {
             clear()
             addAll(notesList)
         }
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
