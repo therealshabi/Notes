@@ -1,11 +1,12 @@
 package com.example.notes
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.example.notes.adapter.NotesRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_notes.*
 import timber.log.Timber
-import java.util.*
 
 
 class NotesActivity : AppCompatActivity() {
@@ -21,7 +21,8 @@ class NotesActivity : AppCompatActivity() {
     private lateinit var notesViewModel: NotesViewModel
     private lateinit var notesAdapter: NotesRecyclerAdapter
 
-    private var timer: Timer = Timer()
+    private var handler = Handler(Looper.getMainLooper())
+    private lateinit var searchRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,9 @@ class NotesActivity : AppCompatActivity() {
             NoteDialog().show(supportFragmentManager, "Note Dialog")
         }
 
+        searchRunnable = Runnable {
+            notesViewModel.getNotes(searchEditText.text.toString())
+        }
         addSearchActions()
     }
 
@@ -47,29 +51,32 @@ class NotesActivity : AppCompatActivity() {
         searchEditText.apply {
             setOnEditorActionListener { searchTextView, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    searchEditText.text.clear()
                     val query = searchTextView.text.toString()
                     if (query.isEmpty()) {
                         return@setOnEditorActionListener true
                     }
                     notesViewModel.getNotes(query)
+                    searchEditText.text.clear()
                     return@setOnEditorActionListener true
                 }
                 false
             }
 
             addTextChangedListener {
-                doOnTextChanged { _, _, _, _ ->
-                    timer.cancel()
-                }
                 doAfterTextChanged {
-                    timer = Timer()
-                    timer.schedule(object : TimerTask() {
-                        override fun run() {
-                            val query = searchEditText.text.toString()
-                            notesViewModel.getNotes(query)
-                        }
-                    }, 600)
+                    val query = searchEditText.text.toString()
+                    val delay = when (query.length) {
+                        0 -> 0L
+                        1 -> 1000L
+                        2, 3 -> 700L
+                        4, 5 -> 500L
+                        else -> 300L
+                    }
+                    handler.removeCallbacks(searchRunnable)
+                    searchRunnable = Runnable {
+                        notesViewModel.getNotes(query)
+                    }
+                    handler.postDelayed(searchRunnable, delay)
                 }
             }
         }
