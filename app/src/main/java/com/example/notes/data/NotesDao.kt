@@ -10,7 +10,7 @@ import com.example.notes.model.Note
 interface NotesDao {
 
     @Insert
-    fun insert(note: Note)
+    fun addNote(note: Note)
 
     @Query("Delete from notes")
     fun deleteAll()
