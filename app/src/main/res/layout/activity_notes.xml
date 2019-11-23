@@ -10,30 +10,28 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/colorPrimaryDark"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="@color/colorPrimaryDark">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentInsetStart="0dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            app:contentInsetStart="0dp">
 
             <EditText
                 android:id="@+id/searchEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:imeOptions="actionSearch"
                 android:layout_margin="8dp"
-                android:textColor="@android:color/black"
                 android:autofillHints="Search for Notes"
-                android:background="@android:color/white"
+                android:background="@drawable/search_edit_text_background"
                 android:drawableStart="@drawable/ic_search_24dp"
                 android:drawablePadding="8dp"
                 android:hint="@string/search_text_view_hint"
+                android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:padding="8dp"
+                android:textColor="@android:color/black"
                 android:textColorHint="#757575"
                 tools:targetApi="o" />
         </androidx.appcompat.widget.Toolbar>
