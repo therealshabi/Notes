@@ -3,6 +3,7 @@ package com.example.notes
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -35,6 +36,13 @@ class NotesActivity : AppCompatActivity() {
 
         notesViewModel.noteList.observe(this, Observer {
             notesAdapter.addNotes(it)
+            if (it.isEmpty()) {
+                noNotesTextView.visibility = View.VISIBLE
+                notesRecyclerView.visibility = View.GONE
+            } else {
+                noNotesTextView.visibility = View.GONE
+                notesRecyclerView.visibility = View.VISIBLE
+            }
         })
 
         addNoteFab.setOnClickListener {

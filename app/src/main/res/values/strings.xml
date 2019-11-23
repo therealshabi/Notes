@@ -4,4 +4,5 @@
 
     <string name="add_title_hint">Add Title</string>
     <string name="add_content_hint">Your content here</string>
+    <string name="no_notes_found">No notes found</string>
 </resources>
