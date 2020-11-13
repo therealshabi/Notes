@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
@@ -31,7 +32,7 @@ class NotesActivity : AppCompatActivity() {
 
         Timber.plant(Timber.DebugTree())
 
-        notesViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
+        notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
         setupNotesRecyclerView()
 
         notesViewModel.noteList.observe(this, Observer {
