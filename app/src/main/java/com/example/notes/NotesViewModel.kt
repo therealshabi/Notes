@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.AsyncTask
 import android.util.LruCache
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.notes.data.NotesDao
 import com.example.notes.data.NotesDatabase
@@ -13,7 +14,8 @@ import java.util.*
 
 class NotesViewModel(application: Application) : AndroidViewModel(application) {
     private val notesDao: NotesDao?
-    var noteList: MutableLiveData<List<Note>> = MutableLiveData()
+    private var mutableNoteList: MutableLiveData<List<Note>> = MutableLiveData()
+    var noteList: LiveData<List<Note>> = mutableNoteList
     private val searchCache: LruCache<String, List<Note>> = LruCache(100)
 
     init {
@@ -24,10 +26,10 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getNotes(query: String = "") {
         if (query.isNotEmpty() && searchCache[query] != null) {
-            noteList.postValue(searchCache[query])
+            mutableNoteList.postValue(searchCache[query])
             return
         }
-        NotesAsyncTask(notesDao, noteList, searchCache).execute(query)
+        NotesAsyncTask(notesDao, mutableNoteList, searchCache).execute(query)
     }
 
     fun addNote(title: String, content: String) {

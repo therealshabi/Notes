@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_add_note.view.*
 
@@ -28,7 +29,7 @@ class NoteDialog : DialogFragment() {
         super.onActivityCreated(savedInstanceState)
         dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         activity?.let {
-            notesViewModel = ViewModelProviders.of(it).get(NotesViewModel::class.java)
+            notesViewModel = ViewModelProvider(it).get(NotesViewModel::class.java)
         }
 
         dialogView.apply {
