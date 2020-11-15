@@ -22,7 +22,6 @@ class NotesActivity : AppCompatActivity() {
     private lateinit var notesViewModel: NotesViewModel
     private lateinit var notesAdapter: NotesRecyclerAdapter
 
-    private var handler = Handler(Looper.getMainLooper())
     private lateinit var searchRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
